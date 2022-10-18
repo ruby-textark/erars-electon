@@ -90,7 +90,10 @@ function Console() {
             era.sendInput("\r\n");
           }
         }}
-        onContextMenu={() => setSkipFlag(true)}
+        onContextMenu={(e) => {
+          setSkipFlag(true);
+          e.preventDefault();
+        }}
       >
         {era.lines.map((line, idx) => {
           const lineNo = idx + era.from;
