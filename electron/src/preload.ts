@@ -3,7 +3,9 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("Erars", {
   launch: () => ipcRenderer.invoke("erars:launch"),
   getState: () => ipcRenderer.sendSync("erars:getState"),
-  getPort: () => ipcRenderer.invoke("erars:getPort"),
+
+  stdin: (input: string) => ipcRenderer.invoke("erars:stdin", input),
+  stdout: () => ipcRenderer.invoke("erars:stdout"),
 });
 
 contextBridge.exposeInMainWorld("TitleButton", {

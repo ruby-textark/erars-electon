@@ -41,14 +41,16 @@ type ConsoleLine = {
 
 type EmueraResponse = {
   current_req: InputRequest | null;
+  rebuild: false;
   bg_color: Color;
   hl_color: Color;
+  last_line?: ConsoleLine;
   lines: ConsoleLine[];
 };
 
 type EmueraState = {
   from: number;
-  getState: () => Promise<EmueraResponse>;
+  read: () => Promise<void>;
   sendInput: (input: string) => Promise<void>;
 } & EmueraResponse;
 

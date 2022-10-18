@@ -5,7 +5,7 @@
   "main": "electron/dist/index.js",
   "scripts": {
     "dev:vite": "vite --host",
-    "dev:electron": "tsc -p electron/tsconfig.json && wait-on tcp:5173 && cross-env mode=DEV electron .",
+    "dev:electron": "tsc -p electron/tsconfig.json && wait-on tcp:5173 && cross-env mode=DEV electron --trace-warnings .",
     "dev": "concurrently -k \"cross-env npm run dev:vite\" \"npm run dev:electron\"",
     "build:vite": "tsc && vite build",
     "build:electron": "tsc -p electron/tsconfig.json && electron-builder",

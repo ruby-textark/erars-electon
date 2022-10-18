@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEra } from "../../utils/erars/bridge";
+import { useEra } from "../../utils/erars/hooks";
 import { ButtonType, Color, TextStyle } from "../../utils/erars/types";
 import TextPart from "./Text";
 
@@ -26,7 +26,7 @@ function ButtonPart({
     <Button
       hl_color={era.hl_color}
       onClick={() => {
-        era.sendInput((value.Int ?? value.String).toString() ?? "");
+        era.sendInput(((value.Int ?? value.String).toString() ?? "") + "\r\n");
       }}
     >
       {segements.map((text, textIdx) => {

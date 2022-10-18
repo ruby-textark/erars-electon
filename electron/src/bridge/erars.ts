@@ -1,13 +1,11 @@
 import { ipcMain, dialog } from "electron";
 import { platform, cwd, env } from "node:process";
 import child_process from "node:child_process";
-import portfinder from "portfinder";
 import { Bridge } from "./bridge";
 
 class ErarsBridge implements Bridge {
   path?: string;
   process?: child_process.ChildProcess;
-  port?: number;
   state: "init" | "launching" | "ready" | "fail";
 
   constructor() {
@@ -15,18 +13,8 @@ class ErarsBridge implements Bridge {
   }
 
   private get executable() {
-    if (platform === "win32") return "executables/erars.exe";
-    return "executables/erars";
-  }
-
-  async retrievePort() {
-    try {
-      portfinder.setBasePort(32767);
-      portfinder.setHighestPort(65535);
-      this.port = await portfinder.getPortPromise();
-    } catch (err) {
-      this.state = "fail";
-    }
+    if (platform === "win32") return "executables/erars-stdio.exe";
+    return "executables/erars-stdio";
   }
 
   async setupPath() {
@@ -50,11 +38,11 @@ class ErarsBridge implements Bridge {
 
       this.state = "launching";
       try {
-        await Promise.all([this.retrievePort(), this.setupPath()]);
+        await this.setupPath();
 
         this.process = child_process.spawn(
           this.executable,
-          [this.path ?? "", `--port=${this.port}`].concat(
+          [this.path ?? "", "--json"].concat(
             env.mode === "DEV" ? [`--log-level=trace`] : []
           ),
           {
@@ -62,6 +50,9 @@ class ErarsBridge implements Bridge {
             windowsHide: true,
           }
         );
+
+        this.process.stdout?.setEncoding("utf8");
+        this.process.stderr?.setEncoding("utf8");
 
         this.state = "ready";
         return true;
@@ -71,8 +62,21 @@ class ErarsBridge implements Bridge {
       }
     });
 
-    ipcMain.handle("erars:getPort", () => {
-      return this.port;
+    ipcMain.handle("erars:stdin", (_, input: string) => {
+      return new Promise((resolve, reject) => {
+        this.process?.stdin?.write(input, (err) => {
+          if (!err) resolve(err);
+          reject(err);
+        });
+      });
+    });
+
+    ipcMain.handle("erars:stdout", () => {
+      return new Promise((resolve) => {
+        this.process?.stdout?.once("data", (chunk: string) => {
+          resolve(chunk);
+        });
+      });
     });
   }
 }
