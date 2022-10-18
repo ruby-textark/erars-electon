@@ -52,7 +52,7 @@ function EmueraInput() {
           }
           onKeyDown={({ key }) => {
             if (key === "Enter") {
-              era.sendInput(inputValue).then(() => setInputValue(""));
+              era.sendInput(inputValue + "\r\n").then(() => setInputValue(""));
             }
           }}
         />
