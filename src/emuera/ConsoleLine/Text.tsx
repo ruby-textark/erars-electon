@@ -43,7 +43,6 @@ const Text = styled.span<{
   }
 
   &.bold.faux {
-    letter-spacing: 1px;
     font-weight: normal;
     text-shadow: 1px 0 0 currentColor;
   }
@@ -53,7 +52,6 @@ const Text = styled.span<{
 
   @media (min-device-pixel-ratio: 1.5), (min-resolution: 120dpi) {
     &.bold.faux {
-      letter-spacing: 1px;
       font-weight: normal;
       text-shadow: 0.5px 0 0 currentColor, 1px 0 0 currentColor;
     }
@@ -61,7 +59,6 @@ const Text = styled.span<{
 
   @media (min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
     .bold {
-      letter-spacing: 1px;
       font-weight: normal;
       text-shadow: 0.333px 0 0 currentColor, 0.666px 0 0 currentColor,
         1px solid currentColor;
@@ -76,7 +73,9 @@ function TextPart({ part }: { part: TextType }) {
   return (
     <Text
       textStyle={textStyle}
-      className={fontStyles(textStyle)}
+      className={
+        fontStyles(textStyle) + (emulatorSettings.fauxRender ? " faux" : "")
+      }
       emulatorSettings={emulatorSettings}
     >
       {textContent.replace(/ /g, "\u00A0")}

@@ -13,7 +13,7 @@ function InputPreferences() {
             emulatorSettings.setArrowInput(target.checked);
           }}
         />
-        <label htmlFor="dir-input">Direction Input</label>
+        <label htmlFor="arrow-input">Direction Input</label>
       </div>
     </PreferencesDiv>
   );

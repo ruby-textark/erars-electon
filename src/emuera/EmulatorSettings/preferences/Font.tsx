@@ -1,7 +1,7 @@
 import Creatable from "react-select/creatable";
 import useEmulatorSettings from "../../../utils/settings";
 import { BuiltinFontNames } from "../../../utils/settings/types";
-import PreferencesDiv, { PreferencesText } from "./Common";
+import PreferencesDiv, { PreferencesCheck, PreferencesText } from "./Common";
 
 const builtinFonts = BuiltinFontNames.map((fontName) => ({
   value: fontName,
@@ -34,11 +34,23 @@ function FontPreferences() {
         value={emulatorSettings.fontSize}
         onInput={({ target }) => {
           const fontSize = +(target as HTMLInputElement).value;
-          if (6 <= fontSize && fontSize <= 24) {
+          if (Number.isNaN(fontSize)) {
+            emulatorSettings.setFontSize(6);
+          } else {
             emulatorSettings.setFontSize(fontSize);
           }
         }}
       />
+      <div>
+        <PreferencesCheck
+          id="faux-render"
+          checked={emulatorSettings.fauxRender}
+          onChange={({ target }) => {
+            emulatorSettings.setFauxRender(target.checked);
+          }}
+        />
+        <label htmlFor="faux-render">Use faux rendering</label>
+      </div>
     </PreferencesDiv>
   );
 }
